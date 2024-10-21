@@ -191,39 +191,38 @@ app.post('/process-payment/:paymentLinkId', async (req, res) => {
 // Email sending route
 app.post('/send', async (req, res) => {
   try {
-    const isSent = await sendEmail('sharjeelhussain877@gmail.com', 'Successfull');
+    const isSent = await sendEmail('sharjeelhussain877@gmail.com', 'Successfull'); // An argument will be recieve that user Email and template in second arg
     res.send(isSent);
   } catch (error) {
-    console.error('Error sending email:', error);
     res.status(500).send({ error: error.message });
   }
 });
 
 
 
+const emailConfig = {
+  host: 'mail.trademark-gov.us',
+  port: 465, // also you can secure this (optional)
+  auth: {
+    user: 'info@trademark-gov.us', // you can use here by proccess.env.EMAIL
+    pass: '#~M20ZV+5Z9.' // you can use here by proccess.env.PASSWORD
+  },
+}
 
 async function sendEmail(customerEmail, message) {
   try {
-    const transporter = nodemailer.createTransport({
-      host: 'mail.trademark-gov.us',
-      port: 465,
-      auth: {
-        user: 'info@trademark-gov.us',
-        pass: '#~M20ZV+5Z9.'
-      },
-    });
+    const transporter = nodemailer.createTransport(emailConfig);
 
     const mailOptions = {
       from: '"Trademark Gov" <info@trademark-gov.us>',
       to: customerEmail,
       subject: 'Message from Your Company',
-      text: message,
+      text: message, // you can add here template with message.
     };
 
     const info = await transporter.sendMail(mailOptions);
     return { info, success: true };
   } catch (error) {
-    console.error('Error sending email:', error);
     return { error, success: false };
   }
 }
