@@ -191,24 +191,25 @@ app.post('/process-payment/:paymentLinkId', async (req, res) => {
 // Email sending route
 app.post('/send', async (req, res) => {
   try {
-    await sendEmail('fahadalam12405@gmail.com', 'Successfull');
-    res.send('Email sent successfully!');
+    const isSent = await sendEmail('sharjeelhussain877@gmail.com', 'Successfull');
+    res.send(isSent);
   } catch (error) {
     console.error('Error sending email:', error);
     res.status(500).send({ error: error.message });
   }
 });
 
-// Email sending function
+
+
+
 async function sendEmail(customerEmail, message) {
   try {
     const transporter = nodemailer.createTransport({
       host: 'mail.trademark-gov.us',
-      port: 465, // Use port 465 for SSL
-      secure: true, // Use SSL
+      port: 465,
       auth: {
         user: 'info@trademark-gov.us',
-        pass: '#~M20ZV+5Z9.', // Ensure this is correct
+        pass: '#~M20ZV+5Z9.'
       },
     });
 
@@ -220,11 +221,10 @@ async function sendEmail(customerEmail, message) {
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log('Email sent:', info.response);
-    return true;
+    return { info, success: true };
   } catch (error) {
     console.error('Error sending email:', error);
-    return false;
+    return { error, success: false };
   }
 }
 
